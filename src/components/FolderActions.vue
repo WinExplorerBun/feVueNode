@@ -1,3 +1,4 @@
+//components/FolderAction.vue
 <template>
   <div class="folder-actions">
     <!-- Create Folder Button -->

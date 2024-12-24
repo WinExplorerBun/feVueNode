@@ -1,3 +1,4 @@
+//stores/folderStore.ts
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import type { FolderType, ApiResponse } from '@/types'

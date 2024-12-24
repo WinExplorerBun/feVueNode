@@ -1,3 +1,4 @@
+//components/FolderList.vue
 <template>
   <div class="folder-list-container">
     <FolderActions ref="folderActionsRef" />
@@ -23,12 +24,7 @@
 
       <div v-if="items.length === 0" class="empty-state">
         <p>This folder is empty</p>
-        <button
-          class="create-folder-btn"
-          @click="handleCreateFolder"
-        >
-          Create New Folder
-        </button>
+
       </div>
     </div>
   </div>
