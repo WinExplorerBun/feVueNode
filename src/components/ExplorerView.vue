@@ -1,7 +1,6 @@
 <!-- src/components/ExplorerView.vue -->
 <template>
   <div class="explorer-container">
-    <!-- Left Panel: Folder Tree -->
     <div class="left-panel">
       <div class="panel-header">
         <h3>Folders</h3>
@@ -10,37 +9,35 @@
         </button>
       </div>
       <TreeView
-        :folders="folderStructure"
-        :selected-folder="selectedFolder"
-        @select-folder="handleFolderSelect"
+          :folders="folderStructure"
+          :selected-folder="selectedFolder"
+          @select-folder="handleFolderSelect"
       />
     </div>
 
-    <!-- Right Panel: Folder Contents -->
     <div class="right-panel">
       <div class="panel-header">
         <h3>{{ selectedFolder?.name || 'Contents' }}</h3>
       </div>
       <FolderList
-        :items="currentFolderContents"
-        @select-item="handleItemSelect"
+          :items="currentFolderContents"
+          @select-item="handleItemSelect"
       />
     </div>
 
-    <!-- Create Root Folder Modal -->
     <div v-if="showCreateModal" class="modal-overlay">
       <div class="modal">
         <h3>Create New Folder</h3>
         <input
-          v-model="newFolderName"
-          placeholder="Folder name"
-          @keyup.enter="handleCreateRootFolder"
+            v-model="newFolderName"
+            placeholder="Folder name"
+            @keyup.enter="handleCreateRootFolder"
         />
         <div class="modal-actions">
           <button @click="showCreateModal = false">Cancel</button>
           <button
-            @click="handleCreateRootFolder"
-            :disabled="!newFolderName || isLoading"
+              @click="handleCreateRootFolder"
+              :disabled="!newFolderName || isLoading"
           >
             Create
           </button>
@@ -49,7 +46,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useFolderStore } from '@/stores/folderStore'
@@ -139,29 +135,31 @@ async function handleCreateRootFolder() {
 <style scoped>
 .explorer-container {
   display: flex;
-  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #f9fafb;
+  overflow: hidden;
 }
 
 .left-panel, .right-panel {
   display: flex;
   flex-direction: column;
   background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  margin: 1rem;
-  overflow: hidden;
+  height: 100%;
 }
 
 .left-panel {
   width: 300px;
   min-width: 250px;
   resize: horizontal;
+  border-right: 1px solid #e5e7eb;
 }
 
 .right-panel {
   flex: 1;
-  margin-left: 0;
 }
 
 .panel-header {
@@ -170,6 +168,7 @@ async function handleCreateRootFolder() {
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid #e5e7eb;
+  background-color: white;
 }
 
 .panel-header h3 {

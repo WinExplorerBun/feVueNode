@@ -1,3 +1,4 @@
+//views/HomeView.vue
 <script setup lang="ts">
 import ExplorerView from '../components/ExplorerView.vue'
 </script>

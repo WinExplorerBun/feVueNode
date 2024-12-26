@@ -1,4 +1,3 @@
-//stores/folderStore.ts
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import type { FolderType, ApiResponse } from '@/types'
@@ -20,12 +19,16 @@ export const useFolderStore = defineStore('folder', {
   },
 
   actions: {
+    setSelectedFolder(folder: FolderType | null) {
+      this.selectedFolder = folder;
+    },
+
     async fetchFolderStructure() {
       this.loading = true
       this.error = null
       try {
         const response = await axios.get<ApiResponse<FolderType[]>>(
-          `${API_BASE_URL}/folders`
+            `${API_BASE_URL}/folders`
         )
         this.folders = response.data.data
       } catch (error) {
@@ -41,7 +44,7 @@ export const useFolderStore = defineStore('folder', {
       this.error = null
       try {
         const response = await axios.get<ApiResponse<FolderType[]>>(
-          `${API_BASE_URL}/folders/${folderId}/contents`
+            `${API_BASE_URL}/folders/${folderId}/contents`
         )
         return response.data.data
       } catch (error) {
@@ -58,10 +61,10 @@ export const useFolderStore = defineStore('folder', {
       this.error = null
       try {
         const response = await axios.post<ApiResponse<FolderType>>(
-          `${API_BASE_URL}/folders`,
-          { name, parentId }
+            `${API_BASE_URL}/folders`,
+            { name, parentId }
         )
-        await this.fetchFolderStructure() // Refresh folder structure
+        await this.fetchFolderStructure()
         return response.data.data
       } catch (error) {
         this.error = 'Failed to create folder'
@@ -77,10 +80,10 @@ export const useFolderStore = defineStore('folder', {
       this.error = null
       try {
         const response = await axios.patch<ApiResponse<FolderType>>(
-          `${API_BASE_URL}/folders/${folderId}`,
-          { name: newName }
+            `${API_BASE_URL}/folders/${folderId}`,
+            { name: newName }
         )
-        await this.fetchFolderStructure() // Refresh folder structure
+        await this.fetchFolderStructure()
         return response.data.data
       } catch (error) {
         this.error = 'Failed to rename folder'
@@ -96,7 +99,7 @@ export const useFolderStore = defineStore('folder', {
       this.error = null
       try {
         await axios.delete(`${API_BASE_URL}/folders/${folderId}`)
-        await this.fetchFolderStructure() // Refresh folder structure
+        await this.fetchFolderStructure()
         if (this.selectedFolder?.id === folderId) {
           this.selectedFolder = null
         }
@@ -107,11 +110,6 @@ export const useFolderStore = defineStore('folder', {
       } finally {
         this.loading = false
       }
-    },
-
-    setSelectedFolder(folder: FolderType | null) {
-      this.selectedFolder = folder
-    },
+    }
   },
 })
-

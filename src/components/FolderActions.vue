@@ -1,30 +1,31 @@
 //components/FolderAction.vue
 <template>
   <div class="folder-actions">
-    <!-- Create Folder Button -->
+    <!-- Create Folder Button - Only show when a folder is selected -->
     <button
-      class="action-button"
-      @click="showCreateModal = true"
-      :disabled="loading"
+        v-if="selectedParentFolder"
+        class="action-button"
+        @click="showCreateModal = true"
+        :disabled="loading"
     >
       <span class="icon">📁</span>
-      New Folder
+      New Sub Folder
     </button>
 
     <!-- Create Folder Modal -->
     <div v-if="showCreateModal" class="modal-overlay">
       <div class="modal">
-        <h3>Create New Folder</h3>
+        <h3>Create New Folder in "{{ selectedParentFolder?.name }}"</h3>
         <input
-          v-model="newFolderName"
-          placeholder="Folder name"
-          @keyup.enter="handleCreateFolder"
+            v-model="newFolderName"
+            placeholder="Folder name"
+            @keyup.enter="handleCreateFolder"
         />
         <div class="modal-actions">
           <button @click="showCreateModal = false">Cancel</button>
           <button
-            @click="handleCreateFolder"
-            :disabled="!newFolderName || loading"
+              @click="handleCreateFolder"
+              :disabled="!newFolderName || loading"
           >
             Create
           </button>
@@ -88,13 +89,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import {ref, computed, onMounted, onUnmounted} from 'vue'
 import { useFolderStore } from '@/stores/folderStore'
 import type { FolderType } from '@/types'
 
 const folderStore = useFolderStore()
 
-// State
+// Get selected folder from store
+const selectedParentFolder = computed(() => folderStore.selectedFolder)
+// Rest of the state
 const showCreateModal = ref(false)
 const showRenameModal = ref(false)
 const showDeleteModal = ref(false)
@@ -106,13 +109,13 @@ const loading = ref(false)
 
 // Methods
 const handleCreateFolder = async () => {
-  if (!newFolderName.value) return
+  if (!newFolderName.value || !selectedParentFolder.value) return
 
   try {
     loading.value = true
     await folderStore.createFolder(
-      newFolderName.value,
-      folderStore.selectedFolder?.id || null
+        newFolderName.value,
+        selectedParentFolder.value.id
     )
     showCreateModal.value = false
     newFolderName.value = ''

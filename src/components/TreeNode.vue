@@ -107,7 +107,9 @@ const contextMenuStyle = computed(() => ({
   left: menuPosition.value.x + 'px'
 }))
 
+
 const handleClick = () => {
+  folderStore.setSelectedFolder(props.folder) // Update store
   emit('select-folder', props.folder)
   if (hasChildren.value) {
     isExpanded.value = true

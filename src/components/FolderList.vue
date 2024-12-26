@@ -4,41 +4,40 @@
     <FolderActions ref="folderActionsRef" />
 
     <div class="folder-list-view">
-      <div
-        v-for="item in items"
-        :key="item.id"
-        class="list-item"
-        :class="{
-          'is-folder': item.type === 'folder',
-          'is-file': item.type === 'file',
-          'selected': selectedItem?.id === item.id
-        }"
-        @click="handleItemClick(item)"
-        @contextmenu="handleContextMenu($event, item)"
-      >
-        <span class="item-icon">
-          {{ item.type === 'folder' ? '📁' : ' ' }}
-        </span>
-        <span class="item-name">{{ item.name }}</span>
+      <div v-if="folderItems.length === 0" class="empty-state">
+        <p>This folder is empty</p>
       </div>
 
-      <div v-if="items.length === 0" class="empty-state">
-        <p>This folder is empty</p>
-
+      <div v-else class="folder-list">
+        <div
+            v-for="folder in folderItems"
+            :key="folder.id"
+            class="list-item"
+            @click="handleItemClick(folder)"
+            @contextmenu="(e) => handleContextMenu(e, folder)"
+        >
+          <span class="item-icon">📁</span>
+          <span class="item-name">{{ folder.name }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
-import { ref } from 'vue'
+import {computed, ref} from 'vue'
 import FolderActions from './FolderActions.vue'
 import type { FolderType } from '@/types'
 
+interface FolderData {
+  folders: FolderType[]
+  files: any[] // We don't need this but keep for type safety
+}
+
 const props = defineProps<{
-  items: FolderType[]
+  items: FolderData
 }>()
 
+const folderItems = computed(() => props.items.folders || [])
 const emit = defineEmits<{
   (e: 'select-item', item: FolderType): void
 }>()
@@ -63,11 +62,6 @@ const handleContextMenu = (event: MouseEvent, item: FolderType) => {
   }
 }
 
-const handleCreateFolder = () => {
-  if (folderActionsRef.value) {
-    folderActionsRef.value.showCreateModal = true
-  }
-}
 </script>
 
 <style scoped>
@@ -108,6 +102,7 @@ const handleCreateFolder = () => {
 
 .item-name {
   flex-grow: 1;
+  color: #181818;
 }
 
 .item-date {
